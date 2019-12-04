@@ -1,0 +1,19 @@
+{{- range $i,$item := .Values.ISCSI }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pdb-{{ $i }}
+  labels:
+    service: djangpostgres
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  iscsi:
+     targetPortal: {{ $item.IP }}
+     iqn: {{ $item.iqn }}
+     lun: 0
+     fsType: xfs
+     readOnly: false
+{{- end }}

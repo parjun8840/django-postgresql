@@ -1,0 +1,29 @@
+replicaCount: 1
+namespaceOverride : utility
+image:
+  repository: parjun8840/django-app02
+  pullPolicy: Always
+  tag: v3
+
+imagePullSecrets: []
+nameOverride: "djangoapp"
+fullnameOverride: "djangoapplication"
+
+service:
+  enabled: true
+  annotations:
+    docker.repo.kubernetes.io/name: "parjun8840"
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  type: NodePort
+  ports:
+    app:
+      port: 8002
+      targetPort: http
+      protocol: TCP
+  nodePort:
+      nodePort: 30011
+podAnnotations: {}
+resources: {}
+nodeSelector: {}

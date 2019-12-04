@@ -1,0 +1,7 @@
+1. Get the application URL by running these commands:
+{{- if .Values.global.postgresqlPort }}
+  echo postgresPort {{ .Values.global.postgresqlPort }}
+{{- end }}
+
+2. This chart has been developed by:
+{{ default "Arjun Pandey" .Chart.Maintainers }}

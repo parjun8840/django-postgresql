@@ -1,0 +1,7 @@
+global:
+  postgresqlPort: 5432
+  postgresqlExposePort: 30010
+  djnagoPort: 8000
+  djangoExposePort: 30011
+postgresql:
+  postgresuser : postgres

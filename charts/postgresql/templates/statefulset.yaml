@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ template "app.namespace" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    user: {{ .Values.postgresuser }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: pgsql-data-path-change
+        image: parjun8840/handyimage:v1
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["sh", "-c", "if test -d /var/lib/postgresql/9.3/main; then rsync -av /var/lib/postgresql /data; sed -i 's|/var/lib/postgresql/9.3/main|/data|g' /etc/postgresql/9.3/main/postgresql.conf;mv /var/lib/postgresql/9.3/main /opt/pg_backup;fi"]
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data01
+      containers:
+        - name: {{ template "name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/data/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+          ports:
+          - name: http
+            protocol: TCP
+            containerPort: {{ .Values.service.ports.app.port }}
+          volumeMounts:
+          - name: data-volume
+            mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: data-volume
+      namespace: {{ template "app.namespace" . }}
+    spec:
+      storageClassName: ""
+      selector:
+        matchLabels:
+          service: {{ .Values.nameOverride }}
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.storage }}Gi

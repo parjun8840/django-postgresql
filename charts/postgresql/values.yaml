@@ -1,0 +1,34 @@
+replicaCount: 1
+namespaceOverride : utility
+image:
+  repository: parjun8840/postgresql
+  pullPolicy: IfNotPresent
+  tag: 9.3
+
+imagePullSecrets: []
+nameOverride: djangpostgres
+fullnameOverride: djangpostgresql
+
+service:
+  enabled: true
+  annotations:
+    docker.repo.kubernetes.io/name: "parjun8840"
+  clusterIP: ""
+  externalIPs: []
+  loadBalancerIP: ""
+  type: NodePort
+  ports:
+    app:
+      port: 5432
+      targetPort: http
+      protocol: TCP
+  nodePort:
+      nodePort: 30010
+podAnnotations: {}
+resources: {}
+nodeSelector: {}
+storage_class_name: ""
+storage: 20
+ISCSI:
+  - IP: ISCSISERVERIP:3260
+    iqn: IQN-tgt0
