@@ -7,6 +7,8 @@ This is a Helm Chart.
 
 3. Pre-requisite: iscsi-initiator-utils, Kubernetes Cluster, helm installed and configured.
 
+4. The application would be availiable using: http://NODEIP:30011/post/
+
 - **Packaging**
 ```
 $ helm package  django-postgresql
